@@ -1,24 +1,21 @@
 #!/usr/bin/env bash
 # bin/compile <build-dir> <cache-dir> <env-dir>
 
-set -e  # Exit immediately if a command exits with a non-zero status
+set -e  # Exit immediately if a command fails
 
 echo "-----> Installing Cloudflared..."
 
-# Ensure the keyrings directory exists with correct permissions
-mkdir -p --mode=0755 /usr/share/keyrings
+BUILD_DIR=$1
+CLOUDFLARED_DIR="$BUILD_DIR/cloudflared"
 
-# Add Cloudflare GPG key
-curl -fsSL https://pkg.cloudflare.com/cloudflare-main.gpg | tee /usr/share/keyrings/cloudflare-main.gpg >/dev/null
+# Ensure directory exists
+mkdir -p "$CLOUDFLARED_DIR"
 
-# Add Cloudflare repository
-echo "deb [signed-by=/usr/share/keyrings/cloudflare-main.gpg] https://pkg.cloudflare.com/cloudflared jammy main" | tee /etc/apt/sources.list.d/cloudflared.list >/dev/null
+# Download latest Cloudflared binary
+echo "       Downloading Cloudflared..."
+curl -fsSL -o "$CLOUDFLARED_DIR/cloudflared" https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64
 
-# Update package lists and install Cloudflared
-echo "       Updating package lists..."
-apt-get update
-
-echo "       Installing Cloudflared..."
-apt-get install -y cloudflared
+# Make the binary executable
+chmod +x "$CLOUDFLARED_DIR/cloudflared"
 
 echo "-----> Cloudflared installation complete."
