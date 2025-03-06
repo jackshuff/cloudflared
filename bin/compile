@@ -19,3 +19,9 @@ curl -fsSL -o "$CLOUDFLARED_DIR/cloudflared" https://github.com/cloudflare/cloud
 chmod +x "$CLOUDFLARED_DIR/cloudflared"
 
 echo "-----> Cloudflared installation complete."
+
+# Verify installation
+echo "       Verifying Cloudflared installation..."
+"$CLOUDFLARED_DIR/cloudflared" version || { echo "       Error: Cloudflared did not install correctly"; exit 1; }
+
+echo "-----> Cloudflared is successfully installed."
