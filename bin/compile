@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# bin/compile <build-dir> <cache-dir> <env-dir>
+
+echo "-----> Installing cloudflared"
+
+echo "       Downloading latest cloudflared..."
+
+echo "       Finished installing cloudflared..."
