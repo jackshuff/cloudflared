@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+# Add Cloudflared to the PATH
+export PATH="/app/cloudflared:$PATH"
+
+echo "-----> Cloudflared added to PATH"
