@@ -7,9 +7,11 @@ echo "-----> Installing Cloudflared..."
 
 BUILD_DIR=$1
 CLOUDFLARED_DIR="$BUILD_DIR/cloudflared"
+CLOUDFLARED_CONFIG_DIR="$BUILD_DIR/.cloudflared"
 
-# Ensure directory exists
+# Ensure directories exist
 mkdir -p "$CLOUDFLARED_DIR"
+mkdir -p "$CLOUDFLARED_CONFIG_DIR"
 
 # Download latest Cloudflared binary
 echo "       Downloading Cloudflared..."
@@ -24,4 +26,17 @@ echo "-----> Cloudflared installation complete."
 echo "       Verifying Cloudflared installation..."
 "$CLOUDFLARED_DIR/cloudflared" version || { echo "       Error: Cloudflared did not install correctly"; exit 1; }
 
-echo "-----> Cloudflared is successfully installed."
+echo "-----> Generating Cloudflared config.yml dynamically..."
+
+# Generate config.yml with HEROKU_APP_NAME and PORT
+cat <<EOF > "$CLOUDFLARED_CONFIG_DIR/config.yml"
+ingress:
+  - hostname: \${HEROKU_APP_NAME}.combinepensions.com
+    service: http://localhost:\${PORT}
+  - service: http_status:404
+EOF
+
+echo "-----> Cloudflared config.yml generated:"
+cat "$CLOUDFLARED_CONFIG_DIR/config.yml"
+
+echo "-----> Cloudflared is successfully installed and configured."
